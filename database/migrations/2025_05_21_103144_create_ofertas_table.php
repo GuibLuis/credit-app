@@ -18,10 +18,10 @@ return new class extends Migration
             $table->foreign('id_consulta')->references('id')->on('consultas')->onDelete('cascade');
             $table->string('instituicao_financeira', length: 100);
             $table->string('modalidade_credito', length: 100);
-            $table->float('valor_a_pagar');
-            $table->float('valor_solicitado');
-            $table->float('valor_parcela');
-            $table->float('taxa_juros');
+            $table->decimal('valor_a_pagar', total: 10, places: 2);
+            $table->decimal('valor_solicitado', total: 10, places: 2);
+            $table->decimal('valor_parcela', total: 10, places: 2);
+            $table->decimal('taxa_juros', total: 5, places: 4);
             $table->integer('qnt_parcelas');
         });
     }
