@@ -70,6 +70,7 @@ $(document).ready(function () {
         withLoading(getOffers(cpf))
             .then(([response]) => {
                 $("#cpf-value").val(cpf);
+                console.log(response);
                 renderOffers(response);
             })
             .catch(error => {

@@ -38,25 +38,45 @@ class ConsultaController extends Controller
             'cpf' => 'required|string|size:11'
         ]);
 
+        //main = http://127.0.0.1:9000/consulta/
+        //mockup = http://127.0.0.1:9000/mockup_data/
         try {
-            $response = Http::post('http://127.0.0.1:9000/consulta/', [
-                'cpf' => $request->cpf
+            $valor = $request->valor ?? 0;
+            $parcelas = $request->parcelas ?? 0;
+
+            $response = Http::post('http://127.0.0.1:9000/mockup_data/', [
+                'cpf' => $request->cpf,
+                'valorSolicitado' => $valor,
+                'parcelas' => $parcelas
             ]);
 
             $offers = $response->json();
             $html = '';
 
             // consulta simples - sem valor e parcelas solicitado
-            foreach ($offers as $instituicao => $modalidades) {
-                foreach ($modalidades as $modalidade => $detalhes) {
-                    $html .= View::make('components.offer_card', [
-                        'instituicao' => $instituicao,
-                        'modalidade' => $modalidade,
-                        'qntParcelaMin' => $detalhes['QntParcelaMin'],
-                        'qntParcelaMax' => $detalhes['QntParcelaMax'],
-                        'valorMin' => $detalhes['valorMin'],
-                        'valorMax' => $detalhes['valorMax'],
-                        'jurosMes' => $detalhes['jurosMes']
+            if ($valor == 0 && $parcelas == 0) {
+                foreach ($offers as $instituicao => $modalidades) {
+                    foreach ($modalidades as $modalidade => $detalhes) {
+                        $html .= View::make('components.offer_card', [
+                            'instituicao' => $instituicao,
+                            'modalidade' => $modalidade,
+                            'qntParcelaMin' => $detalhes['QntParcelaMin'],
+                            'qntParcelaMax' => $detalhes['QntParcelaMax'],
+                            'valorMin' => $detalhes['valorMin'],
+                            'valorMax' => $detalhes['valorMax'],
+                            'jurosMes' => $detalhes['jurosMes']
+                        ])->render();
+                    }
+                }
+            }else{
+                foreach ($offers as $order => $offer) {
+                    $html .= View::make('components.offer_card-alt', [
+                        'order' => $order,
+                        'instituicao' => $offer['instituicaoFinanceira'],
+                        'modalidade' => $offer['modalidadeCredito'],
+                        'valorAPagar' => $offer['valorAPagar'],
+                        'valorParcela' => $offer['valorParcela'],
+                        'taxaJuros' => $offer['taxaJuros'],
                     ])->render();
                 }
             }
