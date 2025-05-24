@@ -22,3 +22,4 @@ Route::get('/historico', function () {
 });
 
 Route::post('/offers', [ConsultaController::class, 'getOffers']);
+Route::post('/store-consult', [ConsultaController::class, 'store']);

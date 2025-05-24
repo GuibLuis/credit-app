@@ -16,16 +16,16 @@ class ConsultaController extends Controller
             'cpf' => $request->cpf,
         ]);
 
-        foreach ($request->ofertas as $oferta) {
+        foreach ($request->offers as $oferta) {
             $oferta_temp = Oferta::create([
                 'id_consulta' => $consulta->id,
-                'instituicao_financeira' => $oferta->instituicao_financeira,
-                'modalidade_credito' => $oferta->modalidade_credito,
-                'valor_a_pagar' => $oferta->valor_a_pagar,
-                'valor_solicitado' => $oferta->valor_solicitado,
-                'valor_parcela' => $oferta->valor_parcela,
-                'taxa_juros' => $oferta->taxa_juros,
-                'qnt_parcelas' => $oferta->qnt_parcelas,
+                'instituicao_financeira' => $oferta['instituicaoFinanceira'],
+                'modalidade_credito' => $oferta['modalidadeCredito'],
+                'valor_a_pagar' => $oferta['valorAPagar'],
+                'valor_solicitado' => $oferta['valorSolicitado'],
+                'valor_parcela' => $oferta['valorParcela'],
+                'taxa_juros' => $oferta['taxaJuros'],
+                'qnt_parcelas' => $oferta['qntParcelas'],
             ]);
         }
 
@@ -44,7 +44,7 @@ class ConsultaController extends Controller
             $valor = $request->valor ?? 0;
             $parcelas = $request->parcelas ?? 0;
 
-            $response = Http::post('http://127.0.0.1:9000/mockup_data/', [
+            $response = Http::post('http://127.0.0.1:9000/consulta/', [
                 'cpf' => $request->cpf,
                 'valorSolicitado' => $valor,
                 'parcelas' => $parcelas
@@ -81,7 +81,7 @@ class ConsultaController extends Controller
                 }
             }
 
-            return response()->json(['html' => $html]);
+            return response()->json(['html' => $html, 'offers' => $offers]);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to fetch offers',

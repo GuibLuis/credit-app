@@ -24,4 +24,6 @@ class Oferta extends Model
         'taxa_juros',
         'qnt_parcelas',
     ];
+
+    public $timestamps = false;
 }
