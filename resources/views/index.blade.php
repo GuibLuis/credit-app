@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@push('scripts')
+    @vite('resources/js/offersCharts.js')
+@endpush
 
 @section('content')
     <div class="flex flex-col gap-16 mb-28">
@@ -18,8 +21,12 @@
         <div id="offers" class="opacity-0 transition-opacity duration-300">
             <h2>Confira as ofertas disponíveis:</h2>
             <div id="offers-list" class="mt-5 mb-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+            <div class="mb-6 grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <div><canvas id="offers_chart-juros" class="hidden"></canvas></div>
+                <div><canvas id="offers_chart-valor" class="hidden"></canvas></div>
+            </div>
             <div class="flex flex-col gap-4">
-                <h2 class="w-[600px]">Informe o valor e a quantidade de parcelas desejadas para encontrar as suas três
+                <h2 class="xl:w-[600px]">Informe o valor e a quantidade de parcelas desejadas para encontrar as suas três
                     melhores
                     opções.</h2>
                 <div class="flex gap-2">
@@ -31,7 +38,8 @@
                         ])
                         <div id="valor-prefix"
                             class="absolute top-0 left-0 bg-white rounded-l-md px-2 h-full flex items-center border-2 border-r-0 border-gray-300">
-                            <span class="font-bold text-gray-500">R$</span></div>
+                            <span class="font-bold text-gray-500">R$</span>
+                        </div>
                     </div>
                     @include('components.input', [
                         'id' => 'parcelas',
@@ -39,8 +47,7 @@
                         'class' => 'w-[100px]',
                     ])
                     @include('components.btn', ['id' => 'btn-parcelas', 'text' => 'Buscar'])
-                    <div id="loading"
-                        class="flex justify-center items-center opacity-0 transition-opacity duration-300 ml-4">
+                    <div class="flex justify-center items-center opacity-0 transition-opacity duration-300 ml-4">
                         <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
                     </div>
                 </div>
@@ -50,8 +57,13 @@
                     <h3>Valor Solicitado: <span id="valor-solicitado"></span></h3>
                     <h3>Parcelas: <span id="parcelas-solicitadas"></span></h3>
                 </div>
-                <div id="best_offers-list" class="my-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+                <div id="best_offers-list" class="my-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                </div>
+                <div class="h-[500px]">
+                    <canvas id="best_offers-chart" class="hidden"></canvas>
+                </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection

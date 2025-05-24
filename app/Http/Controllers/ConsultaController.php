@@ -12,21 +12,28 @@ class ConsultaController extends Controller
 {
     public function store(Request $request)
     {
+        $request->validate([
+            'cpf' => 'required|string|size:11',
+            'offers' => 'nullable|array'
+        ]);
+
         $consulta = Consulta::create([
             'cpf' => $request->cpf,
         ]);
 
-        foreach ($request->offers as $oferta) {
-            $oferta_temp = Oferta::create([
-                'id_consulta' => $consulta->id,
-                'instituicao_financeira' => $oferta['instituicaoFinanceira'],
-                'modalidade_credito' => $oferta['modalidadeCredito'],
-                'valor_a_pagar' => $oferta['valorAPagar'],
-                'valor_solicitado' => $oferta['valorSolicitado'],
-                'valor_parcela' => $oferta['valorParcela'],
-                'taxa_juros' => $oferta['taxaJuros'],
-                'qnt_parcelas' => $oferta['qntParcelas'],
-            ]);
+        if ($request->offers) {
+            foreach ($request->offers as $oferta) {
+                $oferta_temp = Oferta::create([
+                    'id_consulta' => $consulta->id,
+                    'instituicao_financeira' => $oferta['instituicaoFinanceira'],
+                    'modalidade_credito' => $oferta['modalidadeCredito'],
+                    'valor_a_pagar' => $oferta['valorAPagar'],
+                    'valor_solicitado' => $oferta['valorSolicitado'],
+                    'valor_parcela' => $oferta['valorParcela'],
+                    'taxa_juros' => $oferta['taxaJuros'],
+                    'qnt_parcelas' => $oferta['qntParcelas'],
+                ]);
+            }
         }
 
         return response()->json($consulta, 201);
@@ -35,7 +42,9 @@ class ConsultaController extends Controller
     public function getOffers(Request $request)
     {
         $request->validate([
-            'cpf' => 'required|string|size:11'
+            'cpf' => 'required|string|size:11',
+            'valor' => 'nullable|numeric',
+            'parcelas' => 'nullable|numeric'
         ]);
 
         //main = http://127.0.0.1:9000/consulta/
@@ -68,7 +77,7 @@ class ConsultaController extends Controller
                         ])->render();
                     }
                 }
-            }else{
+            } else {
                 foreach ($offers as $order => $offer) {
                     $html .= View::make('components.offer_card-alt', [
                         'order' => $order,

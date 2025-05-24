@@ -43,8 +43,10 @@ $(document).ready(function () {
     // função para renderizar as ofertas
     function renderOffers(responseHtml, listId, containerId) {
         $(listId).empty();
-        if (responseHtml) {
+        if (responseHtml != '') {
             $(listId).html(responseHtml);
+        } else {
+            $(listId).html('<p class="text-center text-gray-500">Não foram encontradas ofertas para o valor e parcelas informados.</p>');
         }
         $(containerId).removeClass("opacity-0");
     }
@@ -82,13 +84,19 @@ $(document).ready(function () {
             return;
         }
         // limpa a lista de ofertas e esconde a lista para a proxima chamada
-        $("#offers-list").empty();
+        $("#best_offers-list").empty();
+        $("#valor-solicitado").text('');
+        $("#parcelas-solicitadas").text('');
+        $("#best_offers-container").addClass("opacity-0");
         $("#offers").addClass("opacity-0");
         // Usa o withLoading para envolver a chamada da API
         withLoading(getOffers(cpf, 0, 0))
             .then(([response]) => {
+                console.log(response.offers);
                 $("#cpf-value").val(cpf);
                 renderOffers(response.html, "#offers-list", "#offers");
+                renderOffersChartJuros(response.offers);
+                renderOffersChartValor(response.offers);
             })
             .catch(error => {
                 console.error("Error fetching offers:", error);
@@ -130,14 +138,16 @@ $(document).ready(function () {
             $("#parcelas").addClass("border-red-500");
             return;
         }
-        
+
+        $("#best_offers-container").addClass("opacity-0");
+
         // Usa o withLoading para envolver a chamada da API
         withLoading(getOffers(cpf, valor, parcelas))
             .then(([response]) => {
-                console.log(response);
                 $("#valor-solicitado").text('R$ ' + valorOld);
                 $("#parcelas-solicitadas").text(parcelas);
                 renderOffers(response.html, "#best_offers-list", "#best_offers-container");
+                renderBestOffersChart(response.offers);
                 saveConsult(cpf, response.offers)
                     .catch(error => {
                         console.error("Error saving consult:", error);
