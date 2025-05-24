@@ -4,6 +4,10 @@ This web application is part of a job application test.
 
 This is used to retrieve data from the credit API and render it using cards and charts, so the user can make the best decision about which offer is best for their desired loan amount and payment terms.
 
+## Tech Stack
+
+Laravel, TailwindCSS, JQuery, Charts.js, JQuery.mask
+
 ## Installation
 
 1. Clone the repository:
